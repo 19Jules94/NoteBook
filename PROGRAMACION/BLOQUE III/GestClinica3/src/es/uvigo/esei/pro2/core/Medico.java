@@ -4,11 +4,17 @@
 
 package es.uvigo.esei.pro2.core;
 
+import nu.xom.Element;
+import nu.xom.ParsingException;
+
 /**
  *
  * @author Nani
  */
-public class Medico extends Persona {  
+public class Medico extends Persona {
+    public static final String tagMedico = "medico";
+    public static final String tagNumColegiado = "numColegiado";
+
     private String numColegiado; // Numero de colegiado del médico
   
 
@@ -22,6 +28,22 @@ public class Medico extends Persona {
     {
         super(nombre, domicilio);
         this.setNumColegiado( numColegiado );
+    }
+
+    public Medico(Element e) throws ParsingException {
+        super(e);
+
+        Element eltoNumColegiado = e.getFirstChildElement(tagNumColegiado);
+
+        if( eltoNumColegiado == null){
+
+            throw new ParsingException("falta el Numero de Colegiado");
+
+        }
+
+        this.numColegiado = eltoNumColegiado.getValue().trim();
+
+
     }
     
     /** Devuelve el número de colegiado del médico 
@@ -39,7 +61,23 @@ public class Medico extends Persona {
     {
         this.numColegiado = numColegiado;
     }    
-    
+
+
+    public Element toDOM(){
+
+        Element root = super.toDOM();
+        root.setLocalName(tagMedico);
+
+        Element eltoNumColegiado = new Element(tagNumColegiado);
+        eltoNumColegiado.appendChild(getNumColegiado());
+        root.appendChild(eltoNumColegiado);
+
+        return root;
+
+
+    }
+
+
     @Override
     public String toString()
     {

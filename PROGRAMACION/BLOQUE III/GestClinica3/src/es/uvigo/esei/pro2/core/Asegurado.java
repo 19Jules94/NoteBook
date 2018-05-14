@@ -4,11 +4,19 @@
 
 package es.uvigo.esei.pro2.core;
 
+import nu.xom.Element;
+import nu.xom.ParsingException;
+
 /**
  * Paciente que esta asegurado por una compañia
  * Created by nanny on 8/03/2018.
  */
 public class Asegurado extends Paciente {
+
+    public static final String tagAsegurado ="asegurado";
+    public static final String tagPoliza = "poliza";
+    public static final String tagCompanhia = "companhia";
+
     private String poliza;
     private String companhia;
 
@@ -28,6 +36,28 @@ public class Asegurado extends Paciente {
         super(numHistorial, nombre, domicilio, fechanac);
         this.setPoliza(poliza);
         this.setCompanhia(companhia);
+    }
+
+    public Asegurado (Element e) throws ParsingException {
+
+        super(e);
+
+        Element eltoPoliza = e.getFirstChildElement(tagPoliza);
+        Element eltoCompanhia = e.getFirstChildElement(tagCompanhia);
+
+        if (eltoPoliza == null){
+            throw  new ParsingException("Falta la poliza");
+        }
+
+        if(eltoCompanhia == null){
+            throw new ParsingException("Falta la companhia");
+        }
+
+        this.poliza = eltoPoliza.getValue().trim();
+        this.companhia = eltoCompanhia.getValue().trim();
+
+
+
     }
 
    /** Devuelve la poliza del paciente
@@ -56,6 +86,27 @@ public class Asegurado extends Paciente {
      */
     public void setCompanhia(String companhia) {
         this.companhia = companhia;
+    }
+
+
+    public Element toDOM(){
+
+        Element root = super.toDOM();
+        root.setLocalName(tagAsegurado);
+
+        Element eltoPoliza = new Element(tagPoliza);
+        Element eltoCompanhia = new Element(tagCompanhia);
+
+        eltoPoliza.appendChild(getPoliza());
+        eltoCompanhia.appendChild(getCompanhia());
+
+        root.appendChild(eltoPoliza);
+        root.appendChild(eltoCompanhia);
+
+        return root;
+
+
+
     }
 
     @Override
