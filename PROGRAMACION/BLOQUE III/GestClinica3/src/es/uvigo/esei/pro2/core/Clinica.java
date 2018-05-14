@@ -143,34 +143,34 @@ public class Clinica {
     }
 
     /** Inserta un nuevo paciente
-     * @param p el nuevo objeto Paciente
+
      */
     public void insertaCita(CitaMedica c)throws DemasiadosElementosException
     {        
-        if ( getNumCitas() == citas.length ) {
+       /* if ( getNumCitas() == citas.length ) {
             throw new DemasiadosElementosException ("inserta() sobrepasa max.: "
                   + citas.length );
-        }
+        }*/
 
-        citas[ numCitas ] = c;
+        citas.add(c);
         ++numCitas;
     }
     
     public void insertaPersona(Persona p)throws DemasiadosElementosException
     {
         if (p instanceof Paciente){
-            if ( getNumPacientes() == pacientes.length ) {
+            /*if ( getNumPacientes() == pacientes.length ) {
                 throw new DemasiadosElementosException ("inserta() "
                         + "sobrepasa max.: " + pacientes.length );
-            }
-            pacientes[ numPacientes ] = (Paciente) p;
+            }*/
+            pacientes.add((Paciente) p);
             ++numPacientes;
         } else if (p instanceof Medico){        
-            if ( getNumMedicos() == medicos.length ) {
+            /*if ( getNumMedicos() == medicos.length ) {
                 throw new DemasiadosElementosException ("inserta() "
                         + "sobrepasa max.: " + medicos.length );
-            }
-            medicos[ numMedicos ] = (Medico) p;
+            }*/
+            medicos.add ((Medico) p);
             ++numMedicos;
         }
     }
@@ -181,13 +181,13 @@ public class Clinica {
     public Medico existeMedico(String numCol){
         int i = 0;
         while ((i < getNumMedicos()) && 
-            (! (medicos[i].getNumColegiado().equals(numCol)))){
+            (! (medicos.get(i).getNumColegiado().equals(numCol)))){
                 i++;
         }
         if (i == getNumMedicos()){
             return null;
         }
-        else return medicos[i];
+        else return medicos.get(i);
     }
     
     /** Devuelve el paciente con el número de historial indicado.
@@ -196,13 +196,13 @@ public class Clinica {
     public Paciente existePaciente(String numHis){
         int i = 0;
         while ((i < getNumPacientes()) && 
-            (! (pacientes[i].getNumHistorial().equals(numHis)))){
+            (! (pacientes.get(i).getNumHistorial().equals(numHis)))){
                 i++;
         }
         if (i == getNumPacientes()){
             return null;
         }
-        else return pacientes[i];
+        else return pacientes.get(i);
     }
 
     /** Elimina la persona (Paciente o Medico) situado en la posicion indicada.
@@ -220,12 +220,13 @@ public class Clinica {
                 }
                 // Se comprueba que no intervenga en una cita medica para poder 
                 // eliminarlo
-                if (tienePersonaCita(pacientes[pos])) {
+                if (tienePersonaCita(pacientes.get(pos))) {
                     throw new ExistenteCitaException("eliminaPaciente() "
                             + "no se puede eliminar ese paciente pues tiene "
                             + "citas médicas.");
                 }
-                pacientes[pos] = pacientes[--numPacientes];
+                pacientes.remove(pos);
+                --numPacientes;
                 break;
             case MEDICO:
                 if (pos >= getNumMedicos()) {
@@ -235,11 +236,12 @@ public class Clinica {
                 }
                 // Se comprueba que no intervenga en una cita medica para poder 
                 //eliminarlo
-                if (tienePersonaCita(medicos[pos])) {
+                if (tienePersonaCita(medicos.get(pos))) {
                     throw new ExistenteCitaException("eliminaMedico(): no se "
                        + "puede eliminar ese médico pues tiene citas médicas.");
                 }
-                medicos[pos] = medicos[--numMedicos];
+                medicos.remove(pos);
+                --numMedicos;
                 break;
         }
 
@@ -255,7 +257,8 @@ public class Clinica {
                     + "sobrepasa el numero de citas medicas: "
                     + getNumCitas());
         }
-        citas[pos] = citas[ --numCitas];
+        citas.remove(pos);
+        --numCitas;
     }    
 
     public String toString(TipoElemento tipo) {
@@ -267,7 +270,7 @@ public class Clinica {
                                         + "son:\n");
                                 for (int i = 0; i < numPacientes; i++) {
                                     toret.append( ( i + 1 ) ).append( ". " );                
-                                    toret.append(pacientes[i].toString())
+                                    toret.append(pacientes.get(i).toString())
                                             .append("\n");
                                 }
                                 } else {
@@ -279,7 +282,7 @@ public class Clinica {
                                         + "son: \n");
                                 for (int i = 0; i < numMedicos; i++) {
                                     toret.append( ( i + 1 ) ).append( ". " );                
-                                    toret.append(medicos[i].toString())
+                                    toret.append(medicos.get(i).toString())
                                             .append("\n");
                                 }
                                 } else {
@@ -291,7 +294,7 @@ public class Clinica {
                                         + "son: \n");
                                 for (int i = 0; i < numCitas; i++) {
                                     toret.append( ( i + 1 ) ).append( ". " );                
-                                    toret.append(citas[i].toString())
+                                    toret.append(citas.get(i).toString())
                                             .append("\n");
                                 }
                                 } else {
@@ -341,7 +344,7 @@ public class Clinica {
     
     /** Devuelve true si la persona (Paciente o Medico) tiene alguna cita médica
      * @param p objeto Persona (Paciente o Medico) a localizar
-     * @param tipo indica si es un Paciente o un Medico
+
      * @return boolean si la persona tiene o no alguna cita médica.
      */
     private boolean tienePersonaCita(Persona p) {
@@ -349,13 +352,13 @@ public class Clinica {
         
         if ( p instanceof Paciente ){
                 while ((i < getNumCitas())
-                        && (!(pacientes[i].equals(p)))) {
+                        && (!(pacientes.get(i).equals(p)))) {
                     i++;
                 }
         }
         else if (p instanceof Medico ){
                 while ((i < getNumCitas())
-                        && (!(medicos[i].equals(p)))) {
+                        && (!(medicos.get(i).equals(p)))) {
                     i++;
                 }                
         }
