@@ -88,18 +88,18 @@ public class Clinica {
                 if (pos >= getNumPacientes()) {
                    throw new PosicionInexistenteClinicaException("getPaciente()"
                             + " sobrepasa la pos: " + (pos + 1)
-                            + " / " + pacientes.length);
+                            + " / " + pacientes.size());
                 }
-                p = pacientes[pos];
+                p = pacientes.get(pos);
                 break;
             case MEDICO:
                 if (pos >= getNumMedicos()) {
                     throw new PosicionInexistenteClinicaException("getMedico()"
                             + " sobrepasa la pos: " + (pos + 1)
-                            + " / " + medicos.length);
+                            + " / " + medicos.size());
                 }
 
-                p = medicos[pos];
+                p = medicos.get(pos);
                 break;
         }
         return p;
@@ -115,10 +115,10 @@ public class Clinica {
         if ( pos >= getNumCitas() ) {
             throw new PosicionInexistenteClinicaException ( "getCita(): "
                     + "sobrepasa la pos: " + ( pos + 1 ) 
-                    + " / " + citas.length );
+                    + " / " + citas.size() );
         }
 
-        return citas[ pos ];
+        return citas.get(pos);
     }    
     
     /** Devuelve el num. de pacientes creados.
