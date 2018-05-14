@@ -9,7 +9,9 @@ import es.uvigo.esei.pro2.core.Medico;
 import es.uvigo.esei.pro2.core.Paciente;
 import es.uvigo.esei.pro2.core.Persona;
 import es.uvigo.esei.pro2.core.Privado;
+import nu.xom.ParsingException;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -19,54 +21,55 @@ public class Ilc {
     /**
      * Realiza el reparto de la funcionalidad
      * ler = lee, evalua, repite
-     */    
-    
-    public static class IlcException extends Exception {        
+     */
+
+    public static class IlcException extends Exception {
         public IlcException(String msg){
             super(msg);
         }
     }
-    
+
     public static class FaltanElementosException extends IlcException{
         public FaltanElementosException(String msg) {
             super(msg);
-        }        
-    }    
-    
-    public void ler()
-    {        
-        int opcionPri = 0;   
+        }
+    }
+
+    public void ler() throws IOException, ParsingException {
+        int opcionPri = 0;
 
         // Prepara
-        Clinica coleccion = crearClinica();               
+        Clinica coleccion = crearClinica();
 
         // Bucle ppal
         do {
-            try{                
+            try{
                 opcionPri = menuPrincipal(coleccion);
 
                 switch (opcionPri) {
-                    case 1: 
+                    case 1:
                         gestionPacientes(coleccion);
                         break;
-                    case 2: 
+                    case 2:
                         gestionMedicos(coleccion);
                         break;
                     case 3:
                         gestionCitas(coleccion);
-                        break;                                                                                                            
+                        break;
                 }
-            }          
+            }
             catch(NumberFormatException exc){
                 System.err.println("\nError. Formato numérico inválido.");
             }
             catch(Exception e){
-                System.err.println("\nERROR inesperado: " + e.getMessage());            
+                System.err.println("\nERROR inesperado: " + e.getMessage());
             }
         } while( opcionPri != 4 );
 
+        coleccion.toXML("pacientes.xml", "medicos.xml", "citas.xml");
+
     }
-    
+
     /**
      * Muestra las distintas opciones para gestionar los pacientes y
      * lanza los métodos que realiza cada operación
@@ -74,7 +77,7 @@ public class Ilc {
      */
     private void gestionPacientes(Clinica coleccion) throws Exception{
         int opcionSec = 0;
-        
+
         do {
             try {
                 opcionSec = menuGestionPacientes();
@@ -102,11 +105,11 @@ public class Ilc {
                 System.err.println("\nERROR CLÍNICA: " + e.getMessage());
             }
             catch(Exception e){
-                System.err.println("\nERROR inesperado: " + e.getMessage());            
+                System.err.println("\nERROR inesperado: " + e.getMessage());
             }
         } while (opcionSec != 6);
     }
-    
+
     /**
      * Muestra las distintas opciones para gestionar los médicos y
      * lanza los métodos que realiza cada operación
@@ -137,11 +140,11 @@ public class Ilc {
                 System.err.println("\nERROR CLÍNICA: " + e.getMessage());
             }
             catch(Exception e){
-                System.err.println("\nERROR inesperado: " + e.getMessage());            
+                System.err.println("\nERROR inesperado: " + e.getMessage());
             }
         } while (opcionSec != 5);
     }
-    
+
     /**
      * Muestra las distintas opciones para gestionar las citas médicas y
      * lanza los métodos que realiza cada operación
@@ -172,12 +175,12 @@ public class Ilc {
                 System.err.println("\nERROR CLÍNICA: " + e.getMessage());
             }
             catch(Exception e){
-                System.err.println("\nERROR inesperado: " + e.getMessage());            
+                System.err.println("\nERROR inesperado: " + e.getMessage());
             }
         } while (opcionSec != 5);
     }
-    
-   
+
+
      /**
      * Lee un num. de teclado
      * @param msg El mensaje a visualizap.
@@ -211,10 +214,10 @@ public class Ilc {
     {
         int toret;
 
-        do {            
+        do {
             System.out.println("\n\tMENU GESTIÓN CLÍNICA HOSPITALARIA\n"
-                            + "\n1. Gestión Pacientes "                                                
-                            + "\n2. Gestión Médicos "                                     
+                            + "\n1. Gestión Pacientes "
+                            + "\n2. Gestión Médicos "
                             + "\n3. Gestión Citas Médicas"
                             + "\n4. Salir\n" );
             toret = leeNum( "Selecciona: " );
@@ -234,14 +237,14 @@ public class Ilc {
     {
         int toret;
 
-        do {            
-            System.out.println("\n\tGESTIÓN PACIENTES: "                    
+        do {
+            System.out.println("\n\tGESTIÓN PACIENTES: "
                             + "\n1. Inserta un nuevo paciente\n"
                             + "2. Modifica un paciente\n"
                             + "3. Elimina un paciente\n"
-                            + "4. Lista pacientes\n"                                      
-                            + "5. Lista pacientes por tipo\n"                           
-                            + "6. Vuelve al menú principal\n");                           
+                            + "4. Lista pacientes\n"
+                            + "5. Lista pacientes por tipo\n"
+                            + "6. Vuelve al menú principal\n");
             toret = leeNum( "Selecciona: " );
         } while( toret < 1
               || toret > 6 );
@@ -259,12 +262,12 @@ public class Ilc {
     {
         int toret;
 
-        do {            
+        do {
             System.out.println("\n\tGESTIÓN MÉDICOS: "
                             + "\n1. Inserta un nuevo médico\n"
                             + "2. Modifica un médico\n"
                             + "3. Elimina un médico\n"
-                            + "4. Lista médicos\n"                                                                    
+                            + "4. Lista médicos\n"
                             + "5. Vuelve al menú principal\n" );
             toret = leeNum( "Selecciona: " );
         } while( toret < 1
@@ -283,12 +286,12 @@ public class Ilc {
     {
         int toret;
 
-        do {            
+        do {
             System.out.println("\n\tGESTION CITAS MEDICAS"
                             + "\n1. Inserta una nueva cita médica\n"
                             + "2. Modifica una cita médica\n"
                             + "3. Elimina una cita médica\n"
-                            + "4. Lista citas medicas\n"                     
+                            + "4. Lista citas medicas\n"
                             + "5. Vuelve al menú principal\n" );
             toret = leeNum( "Selecciona: " );
         } while( toret < 1
@@ -296,8 +299,8 @@ public class Ilc {
 
         System.out.println();
         return toret;
-    }        
-    
+    }
+
     /**
      *  Crea un nuevo paciente y lo inserta en la coleccion
      *  @param coleccion La coleccion en la que se inserta el paciente.
@@ -318,19 +321,19 @@ public class Ilc {
         }
         modificaPaciente( p );
         coleccion.insertaPersona( p );
-    }     
+    }
     /**
      *  Crea un nuevo médico y lo inserta en la coleccion
      *  @param coleccion La coleccion en la que se inserta el medico.
      */
     private void insertaMedico(Clinica coleccion)
             throws Clinica.ClinicaException
-    {        
+    {
         Medico m = new Medico( "", "", "");
-        
+
         modificaMedico( m );
         coleccion.insertaPersona( m );
-    }     
+    }
 
     /**
      *  Crea una nueva cita médica y lo inserta en la coleccion
@@ -338,51 +341,51 @@ public class Ilc {
      */
     private void insertaCita(Clinica coleccion)
             throws Clinica.ClinicaException, IlcException
-    {   
+    {
         Medico m = new Medico( "", "", "");
         Fecha fecha = new Fecha (0,0,0);
         Paciente p = new Asegurado( "", "", "", fecha, "", "" );
         Hora hora = new Hora (0, 0);
         CitaMedica c = new CitaMedica( p, m, fecha, hora);
-        
-        if ((coleccion.getNumMedicos()== 0) 
+
+        if ((coleccion.getNumMedicos()== 0)
                 || (coleccion.getNumPacientes()== 0)){
             throw new FaltanElementosException("Faltan pacientes o medicos "
                     + "para elaborar una cita médica.");
         }
         modificaCita( c, coleccion );
         coleccion.insertaCita( c );
-    } 
-    
+    }
+
     /**
      * Borra un paciente por su posicion en la colección.
      * @param coleccion La coleccion en la que se elimina el paciente
      */
     private void eliminaPaciente(Clinica coleccion)
-            throws Clinica.ClinicaException 
+            throws Clinica.ClinicaException
     {
         if ( coleccion.getNumPacientes() > 0 ) {
-            coleccion.eliminaPersona( leePosPaciente( coleccion ), 
+            coleccion.eliminaPersona( leePosPaciente( coleccion ),
                     Clinica.TipoElemento.PACIENTE );
         } else {
             System.out.println( "La coleccion no contiene pacientes." );
         }
     }
- 
+
     /**
      * Borra un medico por su posicion en la colección.
      * @param coleccion La coleccion en la que se elimina el medico
      */
     private void eliminaMedico(Clinica coleccion)
-            throws Clinica.ClinicaException 
+            throws Clinica.ClinicaException
     {
         if ( coleccion.getNumMedicos() > 0 ) {
-            coleccion.eliminaPersona( leePosMedico( coleccion ), 
+            coleccion.eliminaPersona( leePosMedico( coleccion ),
                     Clinica.TipoElemento.MEDICO );
         } else {
             System.out.println( "La coleccion no contiene médicos." );
         }
-    }    
+    }
 
     /**
      * Borra una cita medica por su posicion en la colección.
@@ -406,7 +409,7 @@ public class Ilc {
             throws Clinica.ClinicaException
     {
         if ( coleccion.getNumMedicos() > 0 ) {
-            this.modificaMedico((Medico) coleccion.getPersona( 
+            this.modificaMedico((Medico) coleccion.getPersona(
                     leePosMedico( coleccion ), Clinica.TipoElemento.MEDICO));
         } else {
             System.out.println( "La coleccion no contiene medicos." );
@@ -421,9 +424,9 @@ public class Ilc {
     {
         String info;
         Scanner teclado = new Scanner( System.in );
-        
-        modificaPersona(p); 
-      
+
+        modificaPersona(p);
+
         // Número colegiado
         System.out.print( "Número de colegiado: " );
         if ( p.getNumColegiado().length() > 0 ) {
@@ -435,7 +438,7 @@ public class Ilc {
         if ( info.length() > 0 ) {
             p.setNumColegiado(info );
         }
-    }    
+    }
 
     /**
      * Modifica un paciente existente.
@@ -445,7 +448,7 @@ public class Ilc {
             throws Clinica.ClinicaException
     {
         if ( coleccion.getNumPacientes() > 0 ) {
-            this.modificaPaciente((Paciente) coleccion.getPersona( 
+            this.modificaPaciente((Paciente) coleccion.getPersona(
                    leePosPaciente( coleccion ), Clinica.TipoElemento.PACIENTE));
         } else {
             System.out.println( "La coleccion no contiene pacientes." );
@@ -467,8 +470,8 @@ public class Ilc {
         else if (p instanceof Privado){
             Privado pr = (Privado) p;
             modificaPrivado(pr);
-        }            
-    }    
+        }
+    }
 
     /**
      * Modifica una cita medica existente.
@@ -478,7 +481,7 @@ public class Ilc {
             throws Clinica.ClinicaException
     {
         if ( coleccion.getNumCitas() > 0 ) {
-            this.modificaCita( coleccion.getCita( leePosCita( coleccion )), 
+            this.modificaCita( coleccion.getCita( leePosCita( coleccion )),
                     coleccion);
         } else {
             System.out.println( "La coleccion no contiene citas médicas." );
@@ -490,11 +493,11 @@ public class Ilc {
      * @param c La cita medica a modificar.
      */
     private void modificaCita(CitaMedica c, Clinica coleccion)
-    {     
+    {
         Scanner entrada = new Scanner(System.in);
         String info;
         Medico m = null;
-        Paciente p = null;      
+        Paciente p = null;
 
         // Obtenemos el médico de la cita
         do {
@@ -506,10 +509,10 @@ public class Ilc {
             info = entrada.nextLine().trim();
             if (info.length() > 0) {
                 m = coleccion.existeMedico(info);
-            }      
+            }
         } while (m == null);
         c.setMedico(m);
-        
+
         // Obtenemos el paciente de la cita
         do {
             System.out.print("Introduce el numero de historial del paciente ");
@@ -520,22 +523,22 @@ public class Ilc {
             info = entrada.nextLine().trim();
             if (info.length() > 0) {
                 p=coleccion.existePaciente(info);
-            }               
+            }
         } while (p == null);
-        c.setPaciente(p); 
-         
+        c.setPaciente(p);
+
         // modificamos la fecha
         modificaFecha(c.getFechaCita());
-        
+
         // modificamos la hora
         modificaHora(c.getHoraCita());
-    }    
-    
+    }
+
     /**
-     * Modifica los datos comunes a cualquier tipo de referencia 
+     * Modifica los datos comunes a cualquier tipo de referencia
      * de un paciente o de un médico
      * @param p La persona a modificar.
-     */ 
+     */
     private void modificaPersona(Persona p)
     {
         String info;
@@ -552,7 +555,7 @@ public class Ilc {
         if ( info.length() > 0 ) {
             p.setNombre( info );
         }
-        
+
         // Domicilio
         System.out.print( "Domicilio " );
         if ( p.getDomicilio().length() > 0 ) {
@@ -564,13 +567,13 @@ public class Ilc {
         if ( info.length() > 0 ) {
             p.setDomicilio( info );
         }
-    
-    }  
-    
+
+    }
+
    /**
      * Modifica los datos comunes a cualquier tipo de referencia de un paciente.
      * @param p El paciente a modificar.
-     */ 
+     */
     private void modificaPacienteBasica(Paciente p)
     {
         String info;
@@ -589,10 +592,10 @@ public class Ilc {
         if ( info.length() > 0 ) {
             p.setNumHistorial(info );
         }
-        
-        // Fecha de nacimiento del paciente 
-        modificaFecha(p.getFechaNacimiento());       
-    }    
+
+        // Fecha de nacimiento del paciente
+        modificaFecha(p.getFechaNacimiento());
+    }
 
      /**
      * Modifica los datos propios de un paciente asegurado por una compañia.
@@ -602,7 +605,7 @@ public class Ilc {
     {
         String info;
         Scanner teclado = new Scanner( System.in );
-        
+
         // Poliza
         System.out.print( "Poliza" );
         if ( a.getPoliza().length() > 0 ) {
@@ -625,7 +628,7 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             a.setCompanhia(info);
-        }        
+        }
     }
 
     /**
@@ -636,7 +639,7 @@ public class Ilc {
     {
         String info;
         Scanner teclado = new Scanner( System.in );
-        
+
         // Número Factura
         System.out.print( "D.N.I." );
         if ( pr.getDni().length() > 0 ) {
@@ -647,11 +650,11 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             pr.setDni(info);
-        }   
+        }
     }
-    
+
     /**
-     * Modifica los datos de una fecha (puede ser fecha nacimiento del 
+     * Modifica los datos de una fecha (puede ser fecha nacimiento del
      * paciente o la fecha de la cita medica.
      * @param f Fecha a modificar.
      */
@@ -659,7 +662,7 @@ public class Ilc {
     {
         Scanner teclado = new Scanner (System.in);
         String info;
-        
+
         // dia
         System.out.print( "Dia" );
         if ( f.getDia() > 0 ) {
@@ -670,7 +673,7 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             f.setDia(Integer.parseInt(info));
-        }   
+        }
          // mes
         System.out.print( "Mes" );
         if ( f.getMes() > 0 ) {
@@ -681,7 +684,7 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             f.setMes(Integer.parseInt(info));
-        }  
+        }
          // año
         System.out.print( "Año" );
         if ( f.getAnho() > 0 ) {
@@ -692,7 +695,7 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             f.setAnho(Integer.parseInt(info));
-        }    
+        }
     }
 
     /**
@@ -703,7 +706,7 @@ public class Ilc {
     {
         Scanner teclado = new Scanner (System.in);
         String info;
-        
+
         // hora
         System.out.print( "Hora" );
         if ( h.getHora() > 0 ) {
@@ -714,7 +717,7 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             h.setHora(Integer.parseInt(info));
-        }   
+        }
          // minutos
         System.out.print( "Minutos" );
         if ( h.getMinutos()> 0 ) {
@@ -725,9 +728,9 @@ public class Ilc {
 
         if ( info.length() > 0 ) {
             h.setMinutos(Integer.parseInt(info));
-        }  
+        }
     }
-       
+
     /**
      * Lee del teclado la posición de un paciente en la colección
      * @param coleccion La colección de la que se obtiene el max.
@@ -739,14 +742,14 @@ public class Ilc {
         int toret;
 
         do {
-            toret = leeNum( "Introduzca posición del paciente (1..." 
+            toret = leeNum( "Introduzca posición del paciente (1..."
                     + numPacientes + "): " );
         } while( toret < 1
               || toret > numPacientes );
 
         return toret - 1;
     }
-    
+
     /**
      * Lee del teclado la posición de un medico en la colección
      * @param coleccion La colección de la que se obtiene el max.
@@ -758,14 +761,14 @@ public class Ilc {
         int toret;
 
         do {
-            toret = leeNum( "Introduzca posición del medico (1..." 
+            toret = leeNum( "Introduzca posición del medico (1..."
                     + numMedicos + "): " );
         } while( toret < 1
               || toret > numMedicos );
 
         return toret - 1;
     }
-    
+
     /**
      * Lee del teclado la posición de una cita médica en la colección
      * @param coleccion La colección de la que se obtiene el max.
@@ -777,15 +780,15 @@ public class Ilc {
         int toret;
 
         do {
-            toret = leeNum( "Introduzca posición de la cita médica (1..." 
+            toret = leeNum( "Introduzca posición de la cita médica (1..."
                     + numCitas + "): " );
         } while( toret < 1
               || toret > numCitas );
 
         return toret - 1;
-    }    
-    
-    /** 
+    }
+
+    /**
      * Lee un caracter del teclado
      * @param men Mensaje a visualizar
      * @return el caracter introducido por el usuario
@@ -795,9 +798,9 @@ public class Ilc {
         Scanner teclado = new Scanner (System.in);
 
         System.out.print(men);
-        return ( teclado.nextLine().trim().charAt(0) );             
+        return ( teclado.nextLine().trim().charAt(0) );
     }
-        
+
     private Paciente.TipoPaciente leeTipoPaciente()
     {
         int tipoPac;
@@ -806,31 +809,31 @@ public class Ilc {
         do {
             System.out.println("Introduce tipo de paciente : ");
             for (int i = 0; i < Paciente.TipoPaciente.values().length; i++) {
-                System.out.println("\t" + (i+1) 
+                System.out.println("\t" + (i+1)
                         + "\t" + Paciente.TipoPaciente.values()[i]);
-            }            
+            }
             tipoPac = leeNum("Tipo Paciente: ") - 1;
         } while ((tipoPac < 0) || (tipoPac >= Paciente.TipoPaciente.values()
-                .length));        
-        
+                .length));
+
         return Paciente.TipoPaciente.values()[tipoPac];
     }
-    
-    private Clinica crearClinica(){
+
+    private Clinica crearClinica() throws IOException, ParsingException {
         Scanner entrada = new Scanner (System.in);
-        
+
         String nombre;
         int maxPac;
         int maxMed;
         int maxCitas;
-        
+
         System.out.print("Introduce el nombre de la clinica: ");
         nombre = entrada.nextLine();
-        
+
         maxPac = leeNum("Introduce el numero máximo de pacientes: ");
         maxMed = leeNum("Introduce el numero máximo de medicos: ");
         maxCitas = leeNum("Introduce el numero máximo de citas médicas: ");
-  
-        return new Clinica (nombre, maxPac, maxMed, maxCitas);
+
+        return new Clinica (nombre, maxPac, maxMed, maxCitas, "pacientes.xml", "medicos.xml", "citas.xml");
     }
 }

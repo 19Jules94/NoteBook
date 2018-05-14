@@ -16,10 +16,10 @@ public class Medico extends Persona {
     public static final String tagNumColegiado = "numColegiado";
 
     private String numColegiado; // Numero de colegiado del médico
-  
+
 
     /** Crea un nuevo médico, con sus datos: numero colegiado, nombre y
-     *  domicilio 
+     *  domicilio
      * @param numColegiado número colegiado del médico
      * @param nombre nombre completo del médico
      * @param domicilio  el domicilio del médico
@@ -45,22 +45,22 @@ public class Medico extends Persona {
 
 
     }
-    
-    /** Devuelve el número de colegiado del médico 
+
+    /** Devuelve el número de colegiado del médico
      * @return el numColegiado del medico, como String.
-     */    
+     */
     public String getNumColegiado()
     {
         return numColegiado;
     }
 
-    /** Cambia el  número de colegiado del médico 
+    /** Cambia el  número de colegiado del médico
      * @param numColegiado el numColegiado del médico
-     */    
+     */
     public void setNumColegiado(String numColegiado)
     {
         this.numColegiado = numColegiado;
-    }    
+    }
 
 
     public Element toDOM(){
@@ -82,10 +82,10 @@ public class Medico extends Persona {
     public String toString()
     {
         StringBuilder toret = new StringBuilder();
-        
+
         toret.append(super.toString());
         toret.append(getNumColegiado()).append(" ; ");
-             
+
         return toret.toString();
     }
 }
