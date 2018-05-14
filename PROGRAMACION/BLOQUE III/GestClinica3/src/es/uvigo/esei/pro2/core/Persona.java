@@ -4,13 +4,20 @@
 
 package es.uvigo.esei.pro2.core;
 
+import nu.xom.Element;
+import nu.xom.ParsingException;
+
 /**
  *
  * @author Nani
  */
 abstract public class Persona {
     private String nombre;  // Nombre completo de la persona
-    private String domicilio;        
+    private String domicilio;
+
+    public static final String tagPersona = "persona";
+    public static final String tagNombre = "nombre";
+    public static final String tagDomicilio = "domicilio";
 
     /** Crea una nueva persona, con sus datos: nombre y domicilio
      * @param nombre nombre completo de la persona
@@ -19,8 +26,26 @@ abstract public class Persona {
     public Persona(String nombre, String domicilio) {
         this.setNombre(nombre);
         this.setDomicilio(domicilio);
-    }       
+    }
 
+    public Persona (Element e) throws ParsingException {
+
+        Element eltoNombre = e.getFirstChildElement(tagNombre);
+        Element eltoDomicilio = e.getFirstChildElement(tagDomicilio);
+
+        if ( eltoNombre == null ) {
+            throw new ParsingException( "Falta el nombre en el elemento contacto" );
+        }
+        if ( eltoDomicilio == null ) {
+            throw new ParsingException( "Falta el domicilio en el elemento contacto" );
+        }
+
+        this.nombre = eltoNombre.getValue().trim();
+        this.domicilio =eltoDomicilio.getValue().trim();
+
+
+
+    }
     /** Devuelve el nombre de la persona
      *  @return El valor como cadena
      **/

@@ -39,15 +39,15 @@ public class Clinica {
 
     public enum TipoElemento {PACIENTE, MEDICO, CITAMEDICA};
     
-    //private Paciente [] pacientes;
+
     private ArrayList <Paciente> pacientes;
     private int numPacientes;
 
-    //private Medico [] medicos;
+
     private ArrayList <Medico> medicos;
     private int numMedicos;
     
-    //private CitaMedica [] citas;
+
     private ArrayList <CitaMedica> citas;
     private int numCitas;
     
@@ -64,11 +64,11 @@ public class Clinica {
     {
         this.nombreClinica = nombre;
         numPacientes = numMedicos = numCitas = 0;
-        //pacientes = new Paciente[ maxPacientes  ];
+
         pacientes = new ArrayList<>();
-        //medicos = new Medico [ maxMedicos ];
+
         medicos = new ArrayList<>();
-        //citas = new CitaMedica [ maxCitas ];
+
 
         citas = new ArrayList<>();
     }
