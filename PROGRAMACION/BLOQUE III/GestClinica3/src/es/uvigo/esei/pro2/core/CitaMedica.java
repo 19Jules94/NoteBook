@@ -3,11 +3,21 @@
  */
 package es.uvigo.esei.pro2.core;
 
+import nu.xom.*;
+import nu.xom.ParsingException;
+
 /**
  *
  * @author Nani
  */
 public class CitaMedica {
+
+    public static final String tagCitaMedica = "citaMedica";
+    public static final String tagPaciente = "paciente";
+    public static final String tagMedico = "medico";
+    public static final String tagFechaCita = "fechaCita";
+    public static final String tagHoraCita = "horaCita";
+
     private Paciente paciente;
     private Medico medico;
     private Fecha fechaCita;
@@ -18,7 +28,7 @@ public class CitaMedica {
      * @param paciente paciente 
      * @param medico médico
      * @param fechaCita  fecha de la cita médica
-     * @param horacita hora de la cita médica
+
      */
     public CitaMedica(Paciente paciente, Medico medico, Fecha fechaCita, 
             Hora horaCita) {
@@ -26,6 +36,44 @@ public class CitaMedica {
         this.medico = medico;
         this.fechaCita = fechaCita;
         this.horaCita = horaCita;
+    }
+
+    public CitaMedica(Element e) throws ParsingException {
+
+        Element eltoPaciente = e.getFirstChildElement(tagPaciente);
+        Element eltoMedico = e.getFirstChildElement(tagMedico);
+        Element eltoCita = e.getFirstChildElement(tagFechaCita);
+        Element eltoHora = e.getFirstChildElement(tagHoraCita);
+
+        if(eltoPaciente == null){
+
+            throw new ParsingException("falta el paciente");
+
+        }
+
+        if(eltoMedico == null){
+
+            throw new ParsingException("falta el medico");
+
+        }
+
+        if(eltoCita == null){
+
+            throw new ParsingException("falta la cita");
+
+        }
+
+        if(eltoHora == null){
+
+            throw new ParsingException("falta la hora");
+
+        }
+
+        this.paciente = new Paciente(eltoPaciente){};
+        this.medico = new Medico(eltoMedico);
+        this.fechaCita = new Fecha(eltoCita);
+        this.horaCita = new Hora(eltoHora);
+
     }
 
     /** Devuelve el paciente involucrado en la cita medica 
@@ -82,6 +130,30 @@ public class CitaMedica {
      */ 
     public void setHoraCita(Hora horaCita) {
         this.horaCita = horaCita;
+    }
+
+
+
+    public Element toDOM(){
+
+        Element root = new Element(tagCitaMedica);
+        Element eltoMedico = getMedico().toDOM();
+        Element eltoPaciente = getPaciente().toDOM();
+        Element eltoFecha = getFechaCita().toDOM();
+        Element eltoHora = getHoraCita().toDOM();
+
+        eltoMedico.appendChild(tagMedico);
+        eltoPaciente.appendChild(tagPaciente);
+        eltoFecha.appendChild(tagFechaCita);
+        eltoHora.appendChild(tagHoraCita);
+
+
+        root.appendChild(eltoMedico);
+        root.appendChild(eltoPaciente);
+        root.appendChild(eltoFecha);
+        root.appendChild(eltoHora);
+
+        return root;
     }
     
     @Override
