@@ -9,6 +9,7 @@ package es.uvigo.esei.pro2.core;
 
 import nu.xom.*;
 
+import javax.print.Doc;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -87,62 +88,73 @@ public class Clinica {
         this.medicos = new ArrayList<>(maxMedicos);
         this.citas = new ArrayList<>(maxCitas);
 
-        File p = new File(pacientes);
-        if (p.createNewFile()) {
-            FileOutputStream f = new FileOutputStream(p);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
-            bw.write("<pacientes></pacientes>");
-            bw.close();
-            f.close();
-        }
-        File m = new File(medicos);
+       File p = new File(pacientes);
 
-        if(m.createNewFile()) {
-            FileOutputStream f = new FileOutputStream(m);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
-            bw.write("<medicos></medicos>");
-            bw.close();
-            f.close();
-        }
+       if(p.createNewFile()){
 
+           FileOutputStream f = new FileOutputStream(p);
 
-        File c = new File(citas);
+           BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
+           bw.write("<pacientes></pacientes>");
+           bw.close();
+           f.close();
 
-        if(c.createNewFile()) {
-            FileOutputStream f = new FileOutputStream(c);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
-            bw.write("<citas></citas>");
-            bw.close();
-            f.close();
-        }
+       }
 
-        Builder parser = new Builder();
-        Document docPacientes = parser.build(p);
-        Document docMedicos = parser.build(m);
-        Document docCitas = parser.build(c);
-        Elements Pacientes = docPacientes.getRootElement().getChildElements();
-        Elements Medicos = docMedicos.getRootElement().getChildElements();
-        Elements Citas = docCitas.getRootElement().getChildElements();
+       File m = new File(medicos);
 
-        numPacientes = Pacientes.size();
-        numMedicos = Medicos.size();
-        numCitas = Citas.size();
+       if(m.createNewFile()){
 
-        for (int i = 0; i < Pacientes.size(); i++) {
-            if(Pacientes.get(i).getLocalName() == TagPrivado)
+           FileOutputStream f = new FileOutputStream(m);
+           BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
+           bw.write("<medicos></medicos>");
+           bw.close();
+           f.close();
+
+       }
+
+       File c = new File(citas);
+       if(c.createNewFile()) {
+           FileOutputStream f = new FileOutputStream(c);
+           BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(f));
+           bw.write("<citas></citas>");
+           bw.close();
+           f.close();
+       }
+
+       Builder parser = new Builder();
+       Document docP = parser.build(p);
+       Document docM = parser.build(m);
+       Document docC = parser.build(c);
+       Elements Pacientes = docP.getRootElement().getChildElements();
+       Elements Medicos = docM.getRootElement().getChildElements();
+       Elements Citas = docC.getRootElement().getChildElements();
+
+       numPacientes = Pacientes.size();
+       numMedicos = Medicos.size();
+       numCitas = Citas.size();
+
+        for (int i = 0; i <numPacientes ; i++) {
+
+            if(Pacientes.get(i).getLocalName()==TagPrivado){
+
                 this.pacientes.add(new Privado(Pacientes.get(i)));
-            else
-                this.pacientes.add(new Asegurado(Pacientes.get(i)));
+            }else{
+
+                this.pacientes.add(new Asegurado((Pacientes.get(i))));
+            }
+
         }
 
-        for (int i = 0; i < Medicos.size(); i++) {
+        for (int i = 0; i < numMedicos ; i++) {
+
+            this.medicos.add(new Medico(Medicos.get(i)));
+
+        }
+
+        for (int i = 0; i <numCitas ; i++) {
             this.medicos.add(new Medico(Medicos.get(i)));
         }
-
-        for (int i = 0; i < Citas.size(); i++) {
-            this.citas.add(new CitaMedica(Citas.get(i)));
-        }
-
 
     }
 
@@ -455,54 +467,48 @@ public class Clinica {
         }
     }
 
-    public void toXML(String a1, String a2, String a3) throws IOException {
-
+    public void toXML(String archivo1,String archivo2,String archivo3) throws IOException {
 
         Element pacientes = new Element(TagPacientes);
-        Element medicos = new Element(TagMedicos);
         Element citas = new Element(TagCitas);
+        Element medicos = new Element(TagMedicos);
 
-        for (int i = 0; i<getNumPacientes(); i++){
+        for (int i = 0; i < getNumPacientes(); i++) {
 
             pacientes.appendChild(this.pacientes.get(i).toDOM());
-
+            
         }
 
-        for (int i = 0; i<getNumMedicos(); i++){
-
+        for (int i = 0; i < getNumMedicos(); i++) {
             medicos.appendChild(this.medicos.get(i).toDOM());
 
         }
 
-        for (int i = 0; i<getNumCitas(); i++){
+        for (int i = 0; i < getNumCitas() ; i++) {
 
             citas.appendChild(this.citas.get(i).toDOM());
 
         }
 
-        FileOutputStream fp = new FileOutputStream(a1);
+        FileOutputStream fp = new FileOutputStream(archivo1);
         Document docPacientes = new Document(pacientes);
-        FileOutputStream fm = new FileOutputStream(a2);
-        Document docMedicos = new Document(medicos);
-        FileOutputStream fc = new FileOutputStream(a3);
-        Document docCitas = new Document(citas);
-
-
         Serializer serial = new Serializer(fp);
         serial.write(docPacientes);
+        FileOutputStream fm = new FileOutputStream(archivo2);
+        Document docMedicos = new Document(medicos);
         serial = new Serializer(fm);
         serial.write(docMedicos);
+        FileOutputStream fc = new FileOutputStream(archivo3);
+        Document docCitas = new Document(citas);
         serial = new Serializer(fc);
         serial.write(docCitas);
 
         fp.close();
-        fm.close();
-        fc.close();
+        fm.close();fc.close();
 
 
 
 
     }
-
 
 }
